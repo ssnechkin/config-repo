@@ -1,5 +1,27 @@
 server:
   port: 8080
+  
+spring:
+  application:
+  	name: lib_books
+  datasource:
+    url: jdbc:postgresql://${DB_URL:localhost:5432}/${DB_NAME:otusnss}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASS:postgres}
+  sql:
+    init:
+      mode: always
+  main:
+    allow-circular-references: true
+  jpa:
+    properties:
+      hibernate:
+        enable_lazy_load_no_trans: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: none
+      show-sql: true
+      
 management:
   endpoints:
     web:
@@ -18,24 +40,33 @@ management:
     # Включает информацию о git (git-commit-id-plugin)
     git:
       mode: "full"
-spring:
-  datasource:
-    url: jdbc:postgresql://${DB_URL:localhost:5432}/${DB_NAME:otusnss}
-    username: ${DB_USER:postgres}
-    password: ${DB_PASS:postgres}
-  sql:
-    init:
-      mode: always
-  main:
-    allow-circular-references: true
-  jpa:
-    properties:
-      hibernate:
-        enable_lazy_load_no_trans: true
-    generate-ddl: true
-    hibernate:
-      ddl-auto: none
-      show-sql: true
+
+eurika:
+  client:
+    service-url:
+      # Адрес сервера регистрации
+      defaultZone: http://localhost:8001/eurika_srv
+  # Нужна ли регистрация в эврике
+  register-with-eureka: true
+  # Нужен ли кэш
+  fetch-registry: true
+  server:
+    # Время для актуализации
+    eviction-interval-timer-in-ms: 15000
+  instanse:
+    # Время ожидания после запроса синхронизации
+    leaseRenewalIntervalInSeconds: 30
+    # Время между запросами синхронизации
+    leaseExpirationOurationInSeconds: 30
+    # Определение инстансов (запущенных экземпляров текущего клиента)
+    instanse-id: ${spring.application.name}:${server.port}
+    # Префелирование ip адрес
+    prefer-ip-address: true
+
+use:
+  fign:
+    client: true
+
 logging:
   level:
     ROOT: INFO
